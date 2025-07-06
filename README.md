@@ -2,6 +2,12 @@
 
 A JavaScript function that creates 3D money stack visualizations showing dollar amounts as growing cube structures.
 
+I jhave included a simple visualiser, in the form of a html file where the function can be tested:
+
+![image](https://github.com/user-attachments/assets/734bc13d-030d-4a79-a9c5-a3f93ac90916)
+![image](https://github.com/user-attachments/assets/88ddf01b-7732-43b7-81f8-2bb34b8ea49f)
+It will stack bills in an ordering from left to right top to buttom in order to create square stacks
+
 ## Usage
 
 ### 1. Include the script
