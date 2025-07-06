@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Stack Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-container {
+            margin-bottom: 30px;
+        }
+
+        .money-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .money-input {
+            font-size: 1.5em;
+            padding: 15px 20px;
+            border: 3px solid #27ae60;
+            border-radius: 15px;
+            width: 300px;
+            text-align: center;
+            font-weight: bold;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .money-input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
+            transform: scale(1.05);
+        }
+
+        .increment-btn {
+            font-size: 2em;
+            font-weight: bold;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #27ae60;
+            border-radius: 50%;
+            background: #27ae60;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .increment-btn:hover {
+            background: #2ecc71;
+            border-color: #2ecc71;
+            transform: scale(1.1);
+        }
+
+        .increment-btn:active {
+            transform: scale(0.95);
+        }
+
+        .money-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 450px;
+            width: 650px;
+            padding: 40px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            border: 3px solid #dee2e6;
+            perspective: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .money-stack {
+            position: absolute;
+            width: 60px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .money-stack-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: auto;
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        .total-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e74c3c;
+        }
+
+        .total-amount {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e74c3c; 
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin: 0 10px;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .money-display {
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            .money-input {
+                width: 200px;
+                font-size: 1.2em;
+            }
+            
+            .increment-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5em;
+            }
+            
+            .money-display {
+                width: 380px;
+                height: 320px;
+                padding: 20px;
+            }
+            
+            .money-stack {
+                width: 40px;
+                height: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Money Stack Visualizer 💰</h1>
+        
+        <div class="input-container">
+            <div class="money-input-group">
+                <button type="button" id="decrementBtn" class="increment-btn">-</button>
+                <input type="number" 
+                       id="moneyInput" 
+                       class="money-input" 
+                       placeholder="Enter amount ($)" 
+                       min="0" 
+                       max="1000000">
+                <button type="button" id="incrementBtn" class="increment-btn">+</button>
+            </div>
+        </div>
+        
+        <div class="money-display" id="moneyDisplay">
+            <div style="font-size: 1.5em; color: #7f8c8d; margin: auto;">
+                <span class="emoji">💸</span>
+                Enter an amount to see your money stacks!
+                <span class="emoji">💸</span>
+            </div>
+        </div>
+        
+        <div class="total-display" id="totalDisplay" style="display: none;">
+            <div>Total Amount: <span class="total-amount" id="totalAmount">$0</span></div>
+        </div>
+        
+        <div class="instructions">
+            💡 Tip: Each bundle represents $1,000. Builds complete cubes: 1x1x1 ($1K), 2x2x2 ($8K), 3x3x3 ($27K), up to 10x10x10 ($1M)!
+        </div>
+    </div>
+
+    <script>
+        // STANDALONE MONEY STACK FUNCTION - CAN BE USED ANYWHERE
+        function createMoneyStackVisualization(amount, options = {}) {
+            const {
+                width = 200,
+                height = 200,
+                imageSrc = 'moneystack.png',
+                backgroundColor = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+                borderRadius = '15px',
+                border = '3px solid #dee2e6'
+            } = options;
+            
+            const container = document.createElement('div');
+            container.style.cssText = `
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: ${width}px;
+                height: ${height}px;
+                background: ${backgroundColor};
+                border-radius: ${borderRadius};
+                border: ${border};
+                perspective: 1000px;
+                position: relative;
+                overflow: hidden;
+            `;
+            
+            const totalBundles = Math.floor(amount / 1000);
+            if (totalBundles === 0) {
+                container.innerHTML = '<div style="font-size:12px;color:#6c757d;text-align:center">Need $1K+</div>';
+                return container;
+            }
+            
+            const positions = calculatePositions(totalBundles);
+            const maxX = Math.max(...positions.map(p => p.x), 0);
+            const maxY = Math.max(...positions.map(p => p.y), 0);
+            const maxZ = Math.max(...positions.map(p => p.z), 0);
+            
+            const [gridSpacing, isoOffsetX, isoOffsetY, stackHeight] = [30, -0.7, 5, 12.5];
+            const centerX = maxX / 2, centerY = maxY / 2;
+            
+            let minPosX = Infinity, maxPosX = -Infinity, minPosY = Infinity, maxPosY = -Infinity;
+            
+            positions.forEach(pos => {
+                const posX = (pos.x - centerX) * gridSpacing + pos.z * isoOffsetX;
+                const posY = (pos.y - centerY) * gridSpacing - pos.z * isoOffsetY - pos.z * stackHeight;
+                minPosX = Math.min(minPosX, posX); maxPosX = Math.max(maxPosX, posX);
+                minPosY = Math.min(minPosY, posY); maxPosY = Math.max(maxPosY, posY);
+            });
+            
+            const structureWidth = maxPosX - minPosX + 60;
+            const structureHeight = maxPosY - minPosY + 45;
+            const baseScale = Math.max(0.3, Math.min((width - 20) / structureWidth, (height - 20) / structureHeight));
+            
+            positions.forEach(pos => {
+                const stack = document.createElement('div');
+                stack.style.cssText = `
+                    position: absolute;
+                    width: 60px;
+                    height: 45px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+                
+                const img = document.createElement('img');
+                img.style.cssText = `
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    image-rendering: auto;
+                    image-rendering: -webkit-optimize-contrast;
+                `;
+                img.src = imageSrc;
+                img.alt = 'Money Stack';
+                img.onerror = () => {
+                    img.style.display = 'none';
+                    stack.innerHTML = '<div style="font-size:40px;text-align:center">💰</div>';
+                };
+                
+                stack.appendChild(img);
+                
+                const posX = (pos.x - centerX) * gridSpacing * baseScale + pos.z * isoOffsetX * baseScale;
+                const posY = (pos.y - centerY) * gridSpacing * baseScale - pos.z * isoOffsetY * baseScale;
+                const posZ = pos.z * stackHeight * baseScale;
+                
+                stack.style.left = '50%';
+                stack.style.top = '50%';
+                stack.style.transform = `translate(${posX}px, ${posY - posZ}px) scale(${baseScale})`;
+                stack.style.zIndex = pos.z * 1000 + pos.y * 100 + pos.x;
+                
+                container.appendChild(stack);
+            });
+            
+            return container;
+        }
+        
+        function calculatePositions(totalStacks) {
+            if (totalStacks === 0) return [];
+            
+            let cubeSize = 1;
+            while (cubeSize ** 3 < totalStacks && cubeSize < 10) cubeSize++;
+            
+            const positions = [];
+            let count = 0;
+            
+            for (let z = 0; z < cubeSize; z++) {
+                for (let y = 0; y < cubeSize; y++) {
+                    for (let x = 0; x < cubeSize; x++) {
+                        if (count >= totalStacks) return positions;
+                        positions.push({ x, y, z });
+                        count++;
+                    }
+                }
+            }
+            return positions;
+        }
+        
+        // ORIGINAL PAGE FUNCTIONALITY
+        const moneyInput = document.getElementById('moneyInput');
+        const moneyDisplay = document.getElementById('moneyDisplay');
+        const totalDisplay = document.getElementById('totalDisplay');
+        const totalAmount = document.getElementById('totalAmount');
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function updateMoneyDisplay() {
+            const amount = parseFloat(moneyInput.value) || 0;
+            moneyDisplay.innerHTML = '';
+            
+            if (amount === 0) {
+                moneyDisplay.innerHTML = '<div style="font-size:1.5em;color:#6c757d;margin:auto;text-align:center"><span class="emoji">💸</span>Enter an amount to see your money bundles!<span class="emoji">💸</span></div>';
+                totalDisplay.style.display = 'none';
+                return;
+            }
+            
+            totalDisplay.style.display = 'block';
+            totalAmount.textContent = formatCurrency(amount);
+            
+            // Use the standalone function for the main display
+            const visualization = createMoneyStackVisualization(amount, {
+                width: 650,
+                height: 450,
+                backgroundColor: 'transparent'
+            });
+            
+            moneyDisplay.appendChild(visualization);
+        }
+
+        moneyInput.addEventListener('input', updateMoneyDisplay);
+        moneyInput.addEventListener('change', updateMoneyDisplay);
+
+        document.getElementById('incrementBtn').addEventListener('click', () => {
+            moneyInput.value = (parseInt(moneyInput.value) || 0) + 1000;
+            updateMoneyDisplay();
+        });
+
+        document.getElementById('decrementBtn').addEventListener('click', () => {
+            moneyInput.value = Math.max(0, (parseInt(moneyInput.value) || 0) - 1000);
+            updateMoneyDisplay();
+        });
+
+        moneyInput.addEventListener('focus', () => moneyInput.style.background = '#fff3cd');
+        moneyInput.addEventListener('blur', () => moneyInput.style.background = '#f8f9fa');
+
+        updateMoneyDisplay();
+    </script>
+</body>
+</html>
+
